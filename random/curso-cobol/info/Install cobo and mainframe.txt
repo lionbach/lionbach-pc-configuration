@@ -1,0 +1,16 @@
+
+
+
+##################################################
+# Emulador Mainframe - Hercules 390              #
+##################################################
+
+# http://www.hercules-390.org/
+# Instalacion
+sudo apt install hercules
+
+# Configuration Procedure (configuration file)
+
+# Creating DASD volumes
+
+# Operating Procedure

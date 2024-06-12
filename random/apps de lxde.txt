@@ -1,0 +1,97 @@
+Para LXQT
+https://www.reddit.com/r/unixporn/comments/6uxiqx/lxqt_i3wm_a_much_better_match_than_i_expected/
+
+Para LXDE
+
+REPOS DE LXDE
+
+libfm               - Activo
+lxsession           - Activo     - no usar
+  (usamos lxpolkit que es parte del git de lxsession)
+gpicview            - Activo
+lxpanel             - Activo     - no usar (usamos panel de i3)
+lxterminal          - Activo     - SI
+lxde.github.io      - Activo     - no usar (pagina web, no es programa)
+lxappearance-obconf - Activo     - no usar
+lxappearance        - Activo     - SI 
+pcmanfm             - Activo     - no usar (usamos thunar)
+lxhotkey            - Activo     - no usar (usamos hotkey de i3)
+lxtask              - Activo     - SI
+lxmusic             - Activo
+lxrandr             - Activo     - SI
+lxlauncher          - Activo
+lxinput             - Activo
+lxde-common         - Activo
+lxmenu-data         - Activo
+menu-cache          - Activo
+lxde-icon-theme     - Activo     - no usar (Feo)
+lx-control-center   - Abandonado - no usar
+old.lxde.org        - Abandonado - no usar
+
+# para instalar en un ubuntu server vacio
+sudo apt install xorg slim i3-wm rofi lxterminal lxtask lxrandr lxappearance lxpolkit pulseaudio pavucontrol network-manager nitrogen qt5ct thunar mousepad ristretto
+
+sudo apt remove xterm
+
+# You must have the following uncommented line in ~/.config/i3/config-i3-config-extra file
+#exec --no-startup-id lxpolkit
+
+Si vamos a usar
+
+lxterminal - terminal
+lxtask     - administrador de tareas
+lxrandr    - editar resolucion
+pcmanfm    - navegador de archivos y gestor de escritorio
+lxpanel    - barra de escritorio
+lxpolkit   - coso del polkit
+LXAppearance
+
+
+
+INSTALAR LXDE Y I3WM
+
+#Cree un script de inicio para su escritorio y colóquelo en /usr/bin.
+#Por ejemplo, creamos un script "/usr/bin/startlxde".
+#Luego, agregue los comandos que desea ejecutar *antes* de LXSession,
+#como configurar configuraciones regionales u otras, y coloque "exec lxsession" en la última #línea.
+
+touch /usr/bin/startLXI3
+echo '#!/bin/sh
+exec /usr/bin/lxsession -s LXI3 -e LXI3' > /usr/bin/startLXI3
+
+#Aparentemente, LXDE (cambiamos por LXI3) es el nombre de nuestro escritorio. 
+#Reemplácelo con el nombre de su escritorio. 
+#Luego, cree un archivo de entrada de escritorio en '/usr/share/xsessions'. 
+#Con esto, puede seleccionar esta sesión de escritorio desde el menú en GDM. 
+#Por ejemplo, este es el contenido de nuestro LXDE.desktop: 
+
+touch /usr/share/xsessions/LXI3.desktop
+echo '[Desktop Entry]
+Encoding=UTF-8
+Name=LXI3
+Comment=LXI3 - Lightweight X11 desktop environment combined LXDE and I3-WM
+Exec=/usr/bin/startLXI3
+Type=Application' > /usr/share/xsessions/LXI3.desktop
+
+#Aparentemente, puedes reemplazar el nombre y la descripción por los tuyos propios.
+#Exec debería apuntar al script de inicio creado en el paso anterior.
+#Ahora aparece un elemento 'LXDE' en la lista de sesiones disponibles en gdm. 
+#NOTA: Es posible que sea necesario reiniciar gdm. (En Debian: sudo /etc/init.d/gdm restart) 
+
+#Los archivos de configuración de LXSession se almacenan en 
+#"~/.config/lxsession/<Nombre de perfil>/" 
+#Si faltan los archivos de configuración, LXSession carga la configuración de todo el sistema en "/etc/xdg/lxsession/<Nombre de perfil>/" en su lugar. 
+#Nota: Si no se ha pasado ninguna <code>-session</code> en la línea de comando a lxsession, el nombre de perfil predeterminado es LXDE. 
+
+touch ~/.config/lxsession/LXI3/autostart
+touch ~/.config/lxsession/LXI3/desktop.conf
+
+touch /etc/xdg/lxsession/LXI3/autostart
+touch /etc/xdg/lxsession/LXI3/desktop.conf
+
+# config para archivos desktop.conf
+# https://github.com/lxde/lxsession/blob/master/data/desktop.conf.example
+
+
+
+

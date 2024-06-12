@@ -1,0 +1,199 @@
+#!/bin/bash
+
+#error:
+# por alguna razon cuando queremos mostrar $box_h_line con un formato con printf falla o se ve menos carateres de los que corresponden
+# por ejemplo
+# printf "%$2.2s" "━━━━━━━━━━"
+# deberia mostrar 2 lineas pero muestra un caracter de pregunta.
+# al parecer hay que multiplicar por 3 la cantidad de veces que queremos ver el caracter "━"
+# este otro ejemplo 
+# printf "%$6.6s" "━━━━━━━━━━" 
+# muestra 2 lineas asi
+# ━━
+# porque 2x3=6
+# para resolver esto usamos substring en ves de darle un formato con printf
+
+# error
+# los formatos de la forma
+# printf "%$10.10s"
+# parecen tener problemas con las letras con acentos, ya que cuentan como 2 carateres y no quedan bien alineadas
+#
+
+# 0 is true
+# 1 is false
+
+# Variables con datos del directorio
+dir_elements_name=()
+dir_elements_display_name=()
+dir_elements_type=()
+dir_elements_selected=$1
+dir_elements_selected_name=""
+dir_elements_last_elements=0
+
+# Variables de terminal
+terminal_cols=0
+terminal_lines=0
+dir_list_text_length=0
+dir_list_margin=4
+dir_list_margin_lateral=0
+dir_list_margin_center=0
+dir_list_box_margin_short=0
+dir_list_box_margin_long=0
+dir_list_box_margin_center=0
+dir_path=""
+
+# Variables de paginacion
+pagination_view_height=0
+pagination_items_per_page=0
+pagination_item_init=0
+pagination_item_last=0
+
+# variables con caracteres para dibujar cuadros
+box_tl="┏" # top left
+box_tr="┓" # top rigth
+box_bl="┗" # bottom left
+box_br="┛" # bootom rigth
+box_ul="┣" # union left
+box_ur="┫" # union rigth
+box_h="━" # horizontal
+box_v="┃" # vertical
+box_h_line="━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+
+# Leemos el directorio y completamos las variables asociadas
+read_dir() {
+  dir_elements_name=("..")
+  dir_elements_display_name=("[DIR] ..")
+  dir_elements_type=("dir")
+  
+  #for element_name in *
+  for element_name in $(ls -A)
+  do
+    if [ -d "$element_name" ]
+    then
+      dir_elements_name=("${dir_elements_name[@]}" "$element_name")
+      dir_elements_display_name=("${dir_elements_display_name[@]}" "[DIR] $element_name")
+      dir_elements_type=("${dir_elements_type[@]}" "dir")
+    fi
+  done
+
+  for element_name in *
+  do
+    if [ -f "$element_name" ]
+    then
+      dir_elements_name=("${dir_elements_name[@]}" "$element_name")
+      dir_elements_display_name=("${dir_elements_display_name[@]}" "$element_name")
+      dir_elements_type=("${dir_elements_type[@]}" "file")
+    fi
+  done
+  dir_elements_selected_name="${dir_elements_name[dir_elements_selected]}"
+  dir_elements_selected_info="$(ls -dlh "$dir_elements_selected_name")"
+  #if [[ $dir_elements_selected -ne 0 ]]
+  #then
+  #  dir_elements_selected_info="$(ls -lh | grep "$dir_elements_selected_name")"
+  #else
+  #  dir_elements_selected_info=""
+  #fi
+  dir_elements_last_elements=$((${#dir_elements_name[@]}-1))
+}
+
+# Leemos variables de la terminal como ancho y largo, y completamos variables asociadas.
+load_terminal_values() {
+  terminal_cols=$(tput cols)
+  terminal_lines=$(tput lines)
+  dir_list_margin_lateral=$dir_list_margin
+  dir_list_text_length=$((($terminal_cols-($dir_list_margin_lateral*3))/2))
+  dir_list_margin_center=$(($terminal_cols-($dir_list_margin_lateral*2)-($dir_list_text_length*2)))
+  dir_list_box_margin_short=$(($dir_list_margin_lateral-1))
+  dir_list_box_margin_long=$(($terminal_cols-$dir_list_margin_lateral-$dir_list_text_length-1))
+  dir_list_box_margin_center=$(($dir_list_margin_center-1))
+  dir_path=$(pwd)
+}
+
+calculate_pagination() {
+  #pagination_view_height=$(($terminal_lines-11))
+  pagination_view_height=$(($terminal_lines-12)) # esto es provisario, porque se ve la linea de nuevo comando
+  pagination_items_per_page=$(((($pagination_view_height-1)/2)*2))
+  pagination_page=$(($dir_elements_selected/$pagination_items_per_page))
+  pagination_item_init=$(($pagination_page*$pagination_items_per_page))
+  pagination_item_last=$(($pagination_item_init+$pagination_items_per_page-1))
+  if [[ $pagination_item_last -gt $dir_elements_last_elements ]]
+  then
+    pagination_item_last=$dir_elements_last_elements
+  fi
+}
+
+draw_title() {
+  printf "$box_tl${box_h_line:0:$((terminal_cols-26))} fe $box_h File Explorer $box_h$box_h$box_h$box_h$box_tr\n"
+  printf "$box_v %-$((terminal_cols-4)).$((terminal_cols-4))s $box_v\n" ""
+  printf "$box_v %-$((terminal_cols-4)).$((terminal_cols-4))s $box_v\n" "$dir_path"
+  printf "$box_v %-$((terminal_cols-4)).$((terminal_cols-4))s $box_v\n" ""
+  printf "$box_bl${box_h_line:0:$((terminal_cols-2))}$box_br\n"
+}
+
+draw_dir_list2() {
+  for ((i=0;i<=$dir_elements_last_elements;i=i+2))
+  do
+    printf "\n    %-${dir_list_text_length}.${dir_list_text_length}s    %-${dir_list_text_length}.${dir_list_text_length}s    \n" "${dir_elements_name[i]}" "${dir_elements_name[i+1]}"
+  done
+}
+
+
+draw_dir_list() {
+  local cont_lines=0
+  local lines_to_complete_view=0
+  for ((i=$pagination_item_init;i<=$pagination_item_last;i=i+2))
+  do
+    if [[ $i = $dir_elements_selected ]]
+    then
+      printf "%${dir_list_box_margin_short}.${dir_list_box_margin_short}s$box_tl${box_h_line:0:$dir_list_text_length}$box_tr%${dir_list_box_margin_long}.${dir_list_box_margin_long}s\n" "" ""
+      printf "%${dir_list_box_margin_short}.${dir_list_box_margin_short}s$box_v%-${dir_list_text_length}.${dir_list_text_length}s$box_v%${dir_list_box_margin_center}.${dir_list_box_margin_center}s%-${dir_list_text_length}.${dir_list_text_length}s%${dir_list_margin_lateral}.${dir_list_margin_lateral}s\n" "" "${dir_elements_display_name[i]}" "" "${dir_elements_display_name[i+1]}" ""
+      printf "%${dir_list_box_margin_short}.${dir_list_box_margin_short}s$box_bl${box_h_line:0:$dir_list_text_length}$box_br%${dir_list_box_margin_long}.${dir_list_box_margin_long}s\n" "" ""
+      cont_lines=$((cont_lines+3))
+    elif [[ $(($i+1)) -eq $dir_elements_selected ]]
+    then
+      printf "%${dir_list_box_margin_long}.${dir_list_box_margin_long}s$box_tl${box_h_line:0:$dir_list_text_length}$box_tr%${dir_list_box_margin_short}.${dir_list_box_margin_short}s\n" "" ""
+      printf "%${dir_list_margin_lateral}.${dir_list_margin_lateral}s%-${dir_list_text_length}.${dir_list_text_length}s%${dir_list_box_margin_center}.${dir_list_box_margin_center}s$box_v%-${dir_list_text_length}.${dir_list_text_length}s$box_v%${dir_list_box_margin_short}.${dir_list_box_margin_short}s\n" "" "${dir_elements_display_name[i]}" "" "${dir_elements_display_name[i+1]}" ""
+      printf "%${dir_list_box_margin_long}.${dir_list_box_margin_long}s$box_bl${box_h_line:0:$dir_list_text_length}$box_br%${dir_list_box_margin_short}.${dir_list_box_margin_short}s\n" "" ""
+      cont_lines=$((cont_lines+3))
+    elif [[ ($(($i-1)) -eq $dir_elements_selected) || ($(($i-2)) -eq $dir_elements_selected)  ]]
+    then
+      printf "%${dir_list_margin_lateral}.${dir_list_margin_lateral}s%-${dir_list_text_length}.${dir_list_text_length}s%${dir_list_margin_center}.${dir_list_margin_center}s%-${dir_list_text_length}.${dir_list_text_length}s%${dir_list_margin_lateral}.${dir_list_margin_lateral}s\n" "" "${dir_elements_display_name[i]}" "" "${dir_elements_display_name[i+1]}" ""
+      cont_lines=$((cont_lines+1))
+    else
+      printf "%${terminal_cols}.${terminal_cols}s\n" ""
+      printf "%${dir_list_margin_lateral}.${dir_list_margin_lateral}s%-${dir_list_text_length}.${dir_list_text_length}s%${dir_list_margin_center}.${dir_list_margin_center}s%-${dir_list_text_length}.${dir_list_text_length}s%${dir_list_margin_lateral}.${dir_list_margin_lateral}s\n" "" "${dir_elements_display_name[i]}" "" "${dir_elements_display_name[i+1]}" ""
+      cont_lines=$((cont_lines+2))
+    fi
+  done
+
+  lines_to_complete_view=$(($pagination_view_height-$cont_lines))
+  for ((i=1;i<=$lines_to_complete_view;i++))
+  do
+    printf "%${terminal_cols}.${terminal_cols}s\n" ""
+  done
+}
+
+draw_test() {
+  for ((i=0;i<=$dir_elements_last_elements;i=i+2))
+  do
+    printf "\n    %-${dir_list_text_length}.${dir_list_text_length}s    %-${dir_list_text_length}.${dir_list_text_length}s    \n" "${dir_elements_name[i]}" "${dir_elements_name[i+1]}"
+  done
+}
+
+draw_footer(){
+  printf "$box_tl${box_h_line:0:$((terminal_cols-2))}$box_tr\n"
+  printf "$box_v %-$((terminal_cols-4)).$((terminal_cols-4))s $box_v\n" "$dir_elements_selected_name"
+  printf "$box_v %-$((terminal_cols-4)).$((terminal_cols-4))s $box_v\n" "$dir_elements_selected_info"
+  printf "$box_ul${box_h_line:0:$((terminal_cols-2))}$box_ur\n"
+  printf "$box_v %-$((terminal_cols-4)).$((terminal_cols-4))s $box_v\n" "[Q] Quit  [WASD] Move  [E] Enter  [C] Copy path  [H] Show hidden"
+  printf "$box_bl${box_h_line:0:$((terminal_cols-2))}$box_br\n"
+}
+
+
+load_terminal_values
+read_dir
+calculate_pagination
+draw_title
+#draw_test
+draw_dir_list
+draw_footer

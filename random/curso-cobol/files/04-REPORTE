@@ -1,0 +1,19 @@
+                             CENTRO DE CAPACITACION
+ FECHA: 08/03/2024           EMPLEADOS DE LA EMPRESA               PAGINA:   1
+ ------------------------------------------------------------------------------
+    NUMERO            NOMBRE               STATUS  DEPTO PUESTO    SALARIO
+ ------------------------------------------------------------------------------
+      100    FERNANDOTOLEDO ESPEJEL            8    200    30      32,000.50
+      200    JOSE MARIA MEDINA                 5    100    10      28,000.60
+      300    ROBERTO PEREZ GARCIA              8    020    50      56,000.70
+      400    VENUSTIANO ESTRADA MENDEZ         7    620    70      21,000.00
+      500    VALENTIN JIMENEZ OJEDA            8    100    10      19,000.80
+        1    LUIS LEONARDO MUMBACH             1    001    02      30,500.00
+        2    JESICA MARIANA CHAMORRO           1    001    02         120.50
+        4    EL PEPE                           1    001    01   1,050,400.00
+        5    JUAN OSACAR CRISTALDO PEREYRA     2    201    02         350.25
+        6    PEDRO GONZALES                    3    201    04       1,020.00
+
+ TOTAL DE EMPLEADOS LEIDOS  :     10
+ TOTAL DE EMPLEADOS IMPRESOS:     10
+ SUMA TOTAL DE SALARIOS     :  $1,238,393.35

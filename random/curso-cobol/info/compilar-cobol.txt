@@ -1,0 +1,6 @@
+compilar:
+cobc -x -o compiled/hello hello.cbl
+# O compilar empleando formato libre
+cobc -x -free -o compiled/hello hello.cbl
+ejecutar:
+compiled/hello

@@ -1,0 +1,19 @@
+                             CENTRO DE CAPACITACION                             
+ FECHA: 08/03/2024           EMPLEADOS DE LA EMPRESA               PAGINA:   1  
+ ------------------------------------------------------------------------------ 
+    NUMERO            NOMBRE               STATUS  DEPTO PUESTO    SALARIO      
+ ------------------------------------------------------------------------------ 
+      100    FERNANDOTOLEDO ESPEJEL            8    200    30      32,000.50    
+    
+0020    0JOSE MARIA MEDINA                     510    01       2,800.06    
+     
+003    00ROBERTO PEREZ GARCIA                  80    20   5,000,560.00    
+    70
+00    400VENUSTIANO ESTRADA MENDEZ             7    62     700,021.00    
+       
+0    0500VALENTIN JIMENEZ OJEDA                    81      10,001.90    
+      800    0500VALENTIN JIMENEZ OJEDA                    81      10,001.90    
+
+ TOTAL DE EMPLEADOS LEIDOS  :      6                                            
+ TOTAL DE EMPLEADOS IMPRESOS:      6                                            
+ SUMA TOTAL DE SALARIOS     :  $5,755,385.36                                    

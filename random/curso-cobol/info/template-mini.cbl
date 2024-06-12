@@ -1,0 +1,7 @@
+       IDENTIFICATION DIVISION.
+       PROGRAM-ID.                PROG0001.
+       PROCEDURE DIVISION.
+       MAIN-PROCEDURE.
+           DISPLAY 'HOLA MUNDO.'.
+           STOP RUN.
+       END PROGRAM PROG0001.

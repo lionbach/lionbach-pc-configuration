@@ -1,0 +1,11 @@
+# Contraseña root:rootheimer
+# si definimos contraseña root en la instalacion, no se instalara sudo.
+# Instalar sudo
+
+su --login
+apt install sudo
+adduser lionbach sudo
+
+# cerramos sesion y nos logueamos de nuevo
+
+sudo apt install i3-wm lightdm x11-xserver-utils pulseaudio nm-tray

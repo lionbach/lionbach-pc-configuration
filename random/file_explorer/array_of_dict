@@ -1,0 +1,66 @@
+#!/bin/bash
+
+
+# Variables con datos del directorio
+dir_elements_name=("..")
+dir_elements_type=("dir")
+dir_elements_selected=0
+dir_elements_last_elements=0
+
+box_tl="┏" # top left
+box_tr="┓" # top rigth
+box_bl="┗" # bottom left
+box_br="┛" # bootom rigth
+box_ul="┣" # union left
+box_ur="┫" # union rigth
+box_h="━" # horizontal
+box_v="┃" # vertical
+box_h_line="━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+
+#for i in {1..9}
+#do
+#  box_h_line="$box_h_line$box_h_line"
+#done
+
+#for element_name in *
+#do
+#  if [ -d "$element_name" ]
+#  then
+#    dir_elements_name=("${dir_elements_name[@]}" "$element_name")
+#    dir_elements_type=("${dir_elements_type[@]}" "dir")
+#  fi
+#done
+#for element_name in *
+#do
+#  if [ -f "$element_name" ]
+#  then
+#    dir_elements_name=("${dir_elements_name[@]}" "$element_name")
+#    dir_elements_type=("${dir_elements_type[@]}" "file")
+#  fi
+#done
+#dir_elements_last_elements=${#dir_elements_name[@]}-1
+
+terminal_cols=$(tput cols)
+dir_element_long_text=$((($terminal_cols-12)/2))
+dir_path=$(pwd)
+
+
+#for ((i=0;i<=$dir_elements_last_elements;i++))
+#do
+#  echo "numero:$i - name:${dir_elements_name[i]} - type:${dir_elements_type[i]} - selected:${dir_elements_selected[i]} "
+#done
+
+printf "$box_tl${box_h_line:0:$((terminal_cols-26))} fe ━ File Explorer ━━━━$box_tr\n"
+printf "$box_v %-$((terminal_cols-4)).$((terminal_cols-4))s $box_v\n" ""
+printf "$box_v %-$((terminal_cols-4)).$((terminal_cols-4))s $box_v\n" "$(pwd)"
+printf "$box_v %-$((terminal_cols-4)).$((terminal_cols-4))s $box_v\n" ""
+printf "$box_bl${box_h_line:0:$((terminal_cols-2))}$box_br\n"
+
+for ((i=0;i<=$dir_elements_last_elements;i=i+2))
+do
+  printf "\n    %-${dir_element_long_text}.${dir_element_long_text}s    %-${dir_element_long_text}.${dir_element_long_text}s    \n" "${dir_elements_name[i]}" "${dir_elements_name[i+1]}"
+done
+
+read_dir() {
+
+}
