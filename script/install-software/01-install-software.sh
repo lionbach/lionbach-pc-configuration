@@ -16,7 +16,9 @@ zenity_comand='zenity \
 --title="Lionbach PC Configuration" \
 --width=900 \
 --height=600 \
---text="\n<span size='16pt'><b>Lionbach PC Configuration</b></span>\n\n<b>Instalar programas</b>\nSeleccion programas a instalar\n" \
+--text="\n<span size='
+zenity_comand+="'16pt'"
+zenity_comand+='><b>Lionbach PC Configuration</b></span>\n\n<b>Instalar programas</b>\nSeleccion programas a instalar\n" \
 --separator=" " \
 --checklist \
 --column="" \

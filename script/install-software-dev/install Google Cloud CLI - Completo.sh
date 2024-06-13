@@ -34,7 +34,7 @@ echo $sudopass | sudo -S apt update
 echo $sudopass | sudo -S apt install -y google-cloud-cli
 
 # 4. (Opcional) Instala cualquiera de los siguientes componentes adicionales.
-bash "Install Google Cloud CLI Componentes Extra.sh"
+bash "install Google Cloud CLI - Componentes Extra.sh"
 
 # 5. Ejecuta gcloud init para comenzar.
 x-terminal-emulator -e "gcloud init"

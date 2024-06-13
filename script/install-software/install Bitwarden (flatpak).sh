@@ -1,2 +1,2 @@
 #!/bin/bash
-flatpak install flathub com.bitwarden.desktop
+flatpak install -y flathub com.bitwarden.desktop

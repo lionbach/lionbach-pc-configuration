@@ -34,7 +34,6 @@ f_init_config(){
     --ok-label="Ingresar Contraseña"
   sudopass=$(zenity --password --title="Lionbach PC Configuration")
   echo $sudopass | sudo -S apt update
-  echo $sudopass | sudo -S apt upgrade -y
   echo $sudopass | sudo -S apt install -y zenity jq curl wget gdebi xclip
   f_generate_env_file
 }
