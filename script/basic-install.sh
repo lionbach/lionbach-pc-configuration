@@ -7,8 +7,8 @@ f_install_chrome(){
 }
 
 f_config_chrome(){
-  google-chrome https://chromewebstore.google.com/detail/bitwarden-password-manage/nngceckbapebfimnlniiiahkandclblb
-
+  google-chrome https://chromewebstore.google.com/detail/bitwarden-password-manage/nngceckbapebfimnlniiiahkandclblb &
+  sleep 5
   zenity \
   --info \
   --title="Instalando y Configurando Chrome" \

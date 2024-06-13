@@ -60,7 +60,6 @@ f_show_menu(){
 }
 
 f_init_config
-f_show_menu
 
 main_menu_option=$(f_show_menu)
 while [[ $main_menu_option != "" ]]; do
