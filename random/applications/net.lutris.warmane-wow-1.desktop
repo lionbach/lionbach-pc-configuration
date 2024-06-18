@@ -1,0 +1,8 @@
+[Desktop Entry]
+Type=Application
+Name=World of Warcraft
+Keywords=wow;world;warcraft
+Icon=/home/lionbach/Imágenes/icons/WoW_icon.svg
+Exec=env LUTRIS_SKIP_INIT=1 flatpak run net.lutris.Lutris lutris:rungameid/1
+Categories=Game
+
